@@ -1,0 +1,16 @@
+C:\Users\User\source\repos\gpt\gpt\bin\Debug\net8.0-windows\gpt.exe
+C:\Users\User\source\repos\gpt\gpt\bin\Debug\net8.0-windows\gpt.deps.json
+C:\Users\User\source\repos\gpt\gpt\bin\Debug\net8.0-windows\gpt.runtimeconfig.json
+C:\Users\User\source\repos\gpt\gpt\bin\Debug\net8.0-windows\gpt.dll
+C:\Users\User\source\repos\gpt\gpt\bin\Debug\net8.0-windows\gpt.pdb
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.Form1.resources
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.csproj.GenerateResource.cache
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.AssemblyInfo.cs
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.dll
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\refint\gpt.dll
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.pdb
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\gpt.genruntimeconfig.cache
+C:\Users\User\source\repos\gpt\gpt\obj\Debug\net8.0-windows\ref\gpt.dll

@@ -60,6 +60,11 @@
             margin-top: 0.25rem;
             background-color: #2c2c2c;
             color: #fff;
+            
+        }
+        textarea{
+            resize:none;
+            height: 30vh;
         }
 
         button {
@@ -134,9 +139,10 @@
     <div class="nav">
         <button class="active" onclick="showSection('empresas')">Empresas</button>
         <button onclick="showSection('selecionar-empresa')">Selecionar Empresa</button>
-        <button onclick="showSection('funcoes')">Funções</button>
+        <button onclick="showSection('funcoes')">Agentes</button>
         <button onclick="showSection('chat')">Chat</button>
         <button onclick="showSection('gerador')">Gerador de Imagens</button>
+        <button onclick="showSection('IAGeral')">IA Geral</button>
     </div>
 
     <div id="empresas" class="section active">
@@ -155,25 +161,31 @@
     <div id="selecionar-empresa" class="section">
         <h2>Selecionar Empresa</h2>
         <select id="listaEmpresas"></select>
-        <br>
         <button onclick="atualizarLista()">Atualizar Lista</button>
-        <button onclick="selecionarEmpresa()">Selecionar Empresa</button>
+        <br>
+        <br>
+        <button onclick="selecionarEmpresa()">Selecionar Empresa</button> 
+        <button onclick="DeletarEmpresa()">Deletar Empresa</button> 
     </div>
 
     <div id="funcoes" class="section">
         <h2>Funções da Empresa</h2>
         <select id="funcoesSelect">
-            <option>Porteiro</option>
-            <option>Chefe</option>
-            <option>Segurança</option>
-            <option>Ajudante</option>
-            <option>Administrativo</option>
+            <option>Planejamento</option>
+            <option>Design</option>
+            <option>Publicidade</option>
+            <option>SocialMedia</option>
+            <option>Fotografia</option>
+            <option>Relations</option>
+            <option>Atendimento</option>
+            <option>Marketing</option>
+            <option>Programador</option>
         </select>
         <br>
-        <button onclick="criarFuncao()">Criar</button>
-        <button onclick="selecionarFuncao()">Selecionar</button>
-        <button onclick="resetarFuncao()">Resetar</button>
-        <button onclick="apagarFuncao()">Apagar</button>
+        <button onclick="criarAgente()">Criar</button>
+        <button onclick="selecionarAgente()">Selecionar</button>
+        <button onclick="resetarAgente()">Resetar</button>
+        <button onclick="apagarAgente()">Apagar</button>
     </div>
 
     <div id="chat" class="section">
@@ -186,6 +198,8 @@
     </div>
 
 
+
+
     <div id="gerador" class="section">
         <h2>Gerador de Imagens com IA</h2>
         <img id="imagemIA" class="generated-img" alt="Imagem gerada pela IA" />
@@ -193,8 +207,40 @@
         <button onclick="gerarImagem()">Gerar Imagem</button>
     </div>
 
+
+    <div id="IAGeral" class="section">
+        <h2>Chat</h2>
+        <div class="chat-box" id="chatBoxIAGeral">
+            <!-- Balões de mensagens aparecerão aqui -->
+        </div>
+        <input type="text" id="mensagemIAGeral" placeholder="Digite sua mensagem">
+        <button onclick="enviarMensagemIAGeral()">Enviar</button>
+    </div>
+
+
     <script>
-        function showSection(id) {
+
+        if (!localStorage.getItem("empresa")) { localStorage.setItem("empresa", ""); }
+        if (!localStorage.getItem("agente")) { localStorage.setItem("agente", ""); }
+        //if (!localStorage.getItem("index_empresa")) { localStorage.setItem("index_empresa", ""); }
+
+        if (!localStorage.getItem("lista_de_empresas_nome")) { localStorage.setItem("lista_de_empresas_nome", ""); }
+
+
+
+        let empresas = [];
+        alimentarListaEmpresas()
+        atualizarLista()
+
+        function alimentarListaEmpresas() {//funcionando
+            empresas = []; //limpa o array
+            empresas = localStorage.getItem("lista_de_empresas_nome").split("##")
+        }
+
+
+
+
+        function showSection(id) {//funcionando
             document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
             document.getElementById(id).classList.add("active");
 
@@ -203,59 +249,273 @@
         }
 
         // EMPRESAS
-        let empresas = [];
 
-        function cadastrarEmpresa() {
+
+        function cadastrarEmpresa() {//funcionando
             const nome = document.getElementById("nomeEmpresa").value;
             const desc = document.getElementById("descricaoEmpresa").value;
             if (nome) {
-                empresas.push({ nome, desc });
+
+                if (localStorage.getItem("lista_de_empresas_nome").includes(nome)) {
+                    alert("Empresa ja esta cadastrada!");
+                    return
+                }
+
+                localStorage.setItem("lista_de_empresas_nome", localStorage.getItem("lista_de_empresas_nome") + "##" + nome)
+                localStorage.setItem(nome + "_descricao", desc)
+                alimentarListaEmpresas()
+                atualizarLista()
+
+                //empresas.push({ nome, desc });
                 alert("Empresa cadastrada com sucesso!");
                 document.getElementById("nomeEmpresa").value = '';
                 document.getElementById("descricaoEmpresa").value = '';
             }
         }
 
-        function atualizarLista() {
+        function atualizarLista() {//funcionando
             const select = document.getElementById("listaEmpresas");
             select.innerHTML = '';
-            empresas.forEach((emp, index) => {
+
+            alimentarListaEmpresas()
+
+            empresas.forEach(nome => {
                 const option = document.createElement("option");
-                option.value = index;
-                option.textContent = emp.nome;
-                select.appendChild(option);
+                option.value = nome;
+                option.textContent = nome;
+                document.getElementById("listaEmpresas").appendChild(option);
             });
+
         }
 
-        function selecionarEmpresa() {
-            const index = document.getElementById("listaEmpresas").value;
-            const empresa = empresas[index];
-            if (empresa) alert(`Empresa selecionada: ${empresa.nome}`);
+        function selecionarEmpresa() {//funcionando
+            const empresa = document.getElementById("listaEmpresas").value;
+            localStorage.setItem("empresa", empresa);
+            alert(`Empresa selecionada: ${empresa}`);
         }
 
-        // FUNÇÕES
-        function criarFuncao() {
-            const funcao = document.getElementById("funcoesSelect").value;
-            alert(`Função criada: ${funcao}`);
+
+        function DeletarEmpresa() {//funcionando
+
+            //pega o nome da mepresa que ta atual
+            const empresa = document.getElementById("listaEmpresas").value;
+
+            //remove o nome da mepresa da lista "lista_de_empresas_nome"
+            let novalista = localStorage.getItem("lista_de_empresas_nome").replace("##" + empresa, "")
+            localStorage.setItem("lista_de_empresas_nome", novalista);
+
+            //apaga a descrição da empresa
+            localStorage.removeItem(empresa + "_descricao")
+
+            //Libera a empresa seleciona atualmente
+            localStorage.setItem("empresa", "");
+            localStorage.setItem("agente", "");
+            localStorage.setItem("index_empresa", "");
+
+            //Recarrega as listas
+            alimentarListaEmpresas()
+            atualizarLista()
+
+            alert(`Empresa removida com sucesso`);
+
         }
 
-        function selecionarFuncao() {
-            const funcao = document.getElementById("funcoesSelect").value;
-            alert(`Função selecionada: ${funcao}`);
+
+        setInterval(() => {//funcionaod
+            document.title = localStorage.getItem("empresa") + " - " + localStorage.getItem("agente")
+        }, 1);
+
+
+        function obterDescricaoEmpresa() {//nao teste, mas deve ta funcionando
+            if (localStorage.getItem("empresa") == "") {
+                alert("Selecione uma empresa antes de executar alguma ação")
+                return ""
+            }
+            if (localStorage.getItem(localStorage.getItem("empresa") + "_descricao")) {
+                return localStorage.getItem(localStorage.getItem("empresa") + "_descricao")
+            } else {
+                return ""
+            }
         }
 
-        function resetarFuncao() {
-            document.getElementById("funcoesSelect").selectedIndex = 0;
+        function obterNomeEmpresa() {//nao teste, mas deve ta funcionando
+            if (localStorage.getItem("empresa") == "") {
+                alert("Selecione uma empresa antes de executar alguma ação")
+                return ""
+            }
+            return localStorage.getItem("empresa")
         }
 
-        function apagarFuncao() {
-            alert("Função apagada!");
+        function obterPromptInicial()//funcionando
+        {
+
+            let final = ""
+            let empresa = localStorage.getItem("empresa");
+            let agente = localStorage.getItem("agente");
+            //--------------------------------------
+            if (empresa === "") {
+                alert("Selecione uma empresa antes de executar algo")
+                return "";
+            }
+            //--------------------------------------
+            if (agente === "") {
+                alert("Selecione um agente antes de executar algo")
+                return "";
+            }
+            //--------------------------------------
+            let intro = "A partir de agora, voce fará parte de uma agencia de marketing, e sera especialista e responsavel em ";
+            let funcao = "";
+
+            //--------------------------------------
+            if (agente == "Planejamento") {
+                funcao = "definir metas, identificar o público-alvo, posicionamento da marca e criar planos de ação alinhados as necessidades do cliente";
+            }
+            if (agente == "Design") {
+                funcao = "envolve redatores, designers graficos, ilustradores e criativos que desenvolvem conteudo visual e textual para campanhas, anuncios e materiais diversos";
+            }
+            if (agente == "Publicidade") {
+                funcao = "gerentes de midia, especialistas em compra de midia digital e tradicional, que planejam e executam campanhas publicitorias, otimizando investimentos em canais como Google Ads, Facebook Ads, TV, radio, entre outros";
+            }
+
+            if (agente == "SocialMedia") {
+                funcao = "profissionais que gerenciam as redes sociais, elaboram conteudo para plataformas como Instagram, TikTok, LinkedIn, respondem ao publico e monitoram engajamento";
+            }
+            if (agente == "Fotografia") {
+                funcao = "criar conteudo audiovisual de alta qualidade para campanhas, videos institucionais, comerciais e materiais para redes sociais";
+            }
+            if (agente == "Relations") {
+                funcao = "relacionamento com clientes, imprensa e influenciadores, alem de produzir conteudo para comunicação interna e externa";
+            }
+            if (agente == "Atendimento") {
+                funcao = "entendem as necessidades do cliente, traduzem essas demandas em ações e fazem o acompanhamento dos resultados";
+            }
+            if (agente == "Marketing") {
+                funcao = "otimizam sites e conteudos para motores de busca, aumentando a visibilidade online da marca";
+            }
+            if (agente == "Programador") {
+                funcao = "programar sites, seja na parte front end ou backend, utilizando qualquer liguangem que seja solicitada. Tambem consegue desenvolver aplicativos para desktop, mobile e sites.";
+            }
+
+            let descricao_empresa = localStorage.removeItem(empresa + "_descricao")
+
+            final = intro + funcao + ". A empresa que voce sera responsavel, se chama " + empresa + ", descrição da empresa: " + descricao_empresa;
+
+            return final;
         }
+        //------------------------------------------------------------
+
+
+
+        // Agentes
+
+        const listaAgentes = [
+            "Planejamento",
+            "Design",
+            "Publicidade",
+            "SocialMedia",
+            "Fotografia",
+            "Relations",
+            "Atendimento",
+            "Marketing",
+            "Programador"
+        ]
+
+        function criarAgente() {
+
+            const agente_selecionado_no_combo = document.getElementById("funcoesSelect").value;
+
+            let empresa = localStorage.getItem("empresa");
+            //let agente = localStorage.getItem("agente");
+            //--------------------------------------
+            if (empresa === "") {
+                alert("Selecione uma empresa antes de criar um agente")
+                console.log("1")
+                return;
+            }
+            //--------------------------------------
+            if (localStorage.getItem(empresa + "_agente_" + agente_selecionado_no_combo)) {
+                alert("Ja existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa)
+                console.log("2")
+                //return;
+            }
+            else {
+                localStorage.setItem(empresa + "_agente_" + agente_selecionado_no_combo, " ")
+                localStorage.setItem("agente", "")
+                alert("Foi criado um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + " com sucesso!")
+                console.log("3")
+            }
+
+        }
+
+        function selecionarAgente() {
+
+            const agente_selecionado_no_combo = document.getElementById("funcoesSelect").value;
+            let empresa = localStorage.getItem("empresa");
+
+            if (empresa === "") {
+                alert("Selecione uma empresa antes de criar um agente")
+                console.log("1")
+                return;
+            }
+            else if (localStorage.getItem(empresa + "_agente_" + agente_selecionado_no_combo)) {
+                //alert("Ja existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa)
+                localStorage.setItem("agente", agente_selecionado_no_combo);
+                alert("Agente de " + agente_selecionado_no_combo + " selecionado para a empresa " + empresa)
+            }
+            else {
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+            }
+        }
+
+        function resetarAgente() {
+            const agente_selecionado_no_combo = document.getElementById("funcoesSelect").value;
+            let empresa = localStorage.getItem("empresa");
+
+            if (empresa === "") {
+                alert("Selecione uma empresa antes de criar um agente")
+                console.log("1")
+                return;
+            }
+
+            if (localStorage.getItem(empresa + "_agente_" + agente_selecionado_no_combo)) {
+
+                localStorage.setItem(empresa + "_agente_" + agente_selecionado_no_combo, " ")
+                //localStorage.setItem("agente", "");
+                alert("Agente de " + agente_selecionado_no_combo + " da empresa " + empresa + " resetado com sucesso!")
+            }
+            else {
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+            }
+        }
+
+        function apagarAgente() {
+
+            const agente_selecionado_no_combo = document.getElementById("funcoesSelect").value;
+            let empresa = localStorage.getItem("empresa");
+
+            if (empresa === "") {
+                alert("Selecione uma empresa antes de criar um agente")
+                console.log("1")
+                return;
+            }
+
+            if (localStorage.getItem(empresa + "_agente_" + agente_selecionado_no_combo) !== null) {
+
+                localStorage.removeItem(empresa + "_agente_" + agente_selecionado_no_combo)
+                localStorage.setItem("agente", "");
+                alert("Agente de " + agente_selecionado_no_combo + " da empresa " + empresa + " removido com sucesso!")
+            }
+            else {
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+            }
+        }
+
+
+
+
+
 
         // CHAT
-
-
-
 
         function enviarMensagem() {
             const input = document.getElementById("mensagem");
@@ -279,10 +539,44 @@
                     const horarioBot = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                     const botBubble = document.createElement("div");
                     botBubble.className = "balao bot-msg";
-                   // botBubble.innerHTML = `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`;
+                    // botBubble.innerHTML = `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`;
                     chat.appendChild(botBubble);
 
-                    efeitoDigitar(botBubble,`Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`);
+                    efeitoDigitar(botBubble, `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`);
+
+                    chat.scrollTop = chat.scrollHeight;
+                }, 800);
+            }
+        }
+
+        // CHAT IAGeral
+
+        function enviarMensagemIAGeral() {
+            const input = document.getElementById("mensagemIAGeral");
+            const chat = document.getElementById("chatBoxIAGeral");
+            const texto = input.value.trim();
+
+            if (texto) {
+                const horario = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                // Mensagem do usuário
+                const userBubble = document.createElement("div");
+                userBubble.className = "balao user-msg";
+                userBubble.innerHTML = `${texto}<span class="hora">${horario}</span>`;
+                chat.appendChild(userBubble);
+
+                input.value = '';
+                chat.scrollTop = chat.scrollHeight;
+
+                // Resposta do bot
+                setTimeout(() => {
+                    const horarioBot = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    const botBubble = document.createElement("div");
+                    botBubble.className = "balao bot-msg";
+                    // botBubble.innerHTML = `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`;
+                    chat.appendChild(botBubble);
+
+                    efeitoDigitarIAGeral(botBubble, `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`);
 
                     chat.scrollTop = chat.scrollHeight;
                 }, 800);
@@ -296,9 +590,26 @@
                 elementoDoTexto.innerHTML = texto.substring(0, indexxxxxxxxxxxxxxxxxxxx);
                 indexxxxxxxxxxxxxxxxxxxx++;
                 if (indexxxxxxxxxxxxxxxxxxxx <= texto.length) {
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         digitar();
                         document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
+                    }, velocidade);
+                }
+            }
+            digitar()
+        }
+
+
+        function efeitoDigitarIAGeral(elementoDoTexto, texto, velocidade = 2) {
+
+            var indexxxxxxxxxxxxxxxxxxxx = 0
+            function digitar() {
+                elementoDoTexto.innerHTML = texto.substring(0, indexxxxxxxxxxxxxxxxxxxx);
+                indexxxxxxxxxxxxxxxxxxxx++;
+                if (indexxxxxxxxxxxxxxxxxxxx <= texto.length) {
+                    setTimeout(() => {
+                        digitar();
+                        document.getElementById("chatBoxIAGeral").scrollTop = document.getElementById("chatBoxIAGeral").scrollHeight;
                     }, velocidade);
                 }
             }

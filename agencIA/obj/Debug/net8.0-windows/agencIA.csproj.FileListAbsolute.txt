@@ -1,0 +1,16 @@
+C:\Users\User\source\repos\agencIA\agencIA\bin\Debug\net8.0-windows\agencIA.exe
+C:\Users\User\source\repos\agencIA\agencIA\bin\Debug\net8.0-windows\agencIA.deps.json
+C:\Users\User\source\repos\agencIA\agencIA\bin\Debug\net8.0-windows\agencIA.runtimeconfig.json
+C:\Users\User\source\repos\agencIA\agencIA\bin\Debug\net8.0-windows\agencIA.dll
+C:\Users\User\source\repos\agencIA\agencIA\bin\Debug\net8.0-windows\agencIA.pdb
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.Form1.resources
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.csproj.GenerateResource.cache
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.AssemblyInfo.cs
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.dll
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\refint\agencIA.dll
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.pdb
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\agencIA.genruntimeconfig.cache
+C:\Users\User\source\repos\agencIA\agencIA\obj\Debug\net8.0-windows\ref\agencIA.dll

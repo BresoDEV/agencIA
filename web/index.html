@@ -1,3 +1,9 @@
+<script>
+    if (!localStorage.getItem("autenticado")) {
+        window.location.href = "login.html"
+    }
+</script>
+<!---------------------------------------->
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -60,10 +66,11 @@
             margin-top: 0.25rem;
             background-color: #2c2c2c;
             color: #fff;
-            
+
         }
-        textarea{
-            resize:none;
+
+        textarea {
+            resize: none;
             height: 30vh;
         }
 
@@ -131,12 +138,65 @@
             color: #aaa;
             margin-top: 0.25rem;
         }
+
+        .bg_vm {
+            background-color: rgb(200, 100, 100);
+        }
+
+        .bg_vm:hover {
+            background-color: rgb(202, 56, 56);
+        }
+
+        .bg_vd {
+            background-color: rgb(100, 200, 100);
+        }
+
+        .bg_vd:hover {
+            background-color: rgb(68, 196, 68);
+        }
+
+        .bg_or {
+            background-color: rgb(225, 170, 77);
+        }
+
+        .bg_or:hover {
+            background-color: rgb(227, 146, 7);
+        }
+
+        .f_br {
+            color: rgb(255, 255, 255);
+        }
+
+        .f_pt {
+            color: rgb(0, 0, 0);
+        }
+
+        .w_30 {
+            width: 30%;
+        }
+
+        .w_40 {
+            width: 40%;
+        }
+
+        .w_50 {
+            width: 50%;
+        }
+
+        .w_100 {
+            width: 100%;
+        }
+
+        .separador {
+            background-color: #444;
+            padding: 10px;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="nav">
+    <div class="nav" id="nav">
         <button class="active" onclick="showSection('empresas')">Empresas</button>
         <button onclick="showSection('selecionar-empresa')">Selecionar Empresa</button>
         <button onclick="showSection('funcoes')">Agentes</button>
@@ -155,17 +215,21 @@
             <label>Descrição</label>
             <textarea id="descricaoEmpresa" rows="3"></textarea>
         </div>
-        <button onclick="cadastrarEmpresa()">Cadastrar</button>
+        <button class="w_100" onclick="cadastrarEmpresa()">Cadastrar</button>
+
+        
     </div>
 
     <div id="selecionar-empresa" class="section">
         <h2>Selecionar Empresa</h2>
         <select id="listaEmpresas"></select>
-        <button onclick="atualizarLista()">Atualizar Lista</button>
+        <button class="w_100" onclick="atualizarLista()">Atualizar Lista</button>
         <br>
         <br>
-        <button onclick="selecionarEmpresa()">Selecionar Empresa</button> 
-        <button onclick="DeletarEmpresa()">Deletar Empresa</button> 
+        <center>
+            <button class="bg_vd" style="width: 49%;" onclick="selecionarEmpresa()">Selecionar Empresa</button>
+            <button class="bg_vm" style="width: 49%;" onclick="DeletarEmpresa()">Deletar Empresa</button>
+        </center>
     </div>
 
     <div id="funcoes" class="section">
@@ -182,19 +246,27 @@
             <option>Programador</option>
         </select>
         <br>
-        <button onclick="criarAgente()">Criar</button>
-        <button onclick="selecionarAgente()">Selecionar</button>
-        <button onclick="resetarAgente()">Resetar</button>
-        <button onclick="apagarAgente()">Apagar</button>
+        <center>
+            <button class="w_40 " onclick="criarAgente()">Criar</button>
+            <button class="w_40 bg_vd" onclick="selecionarAgente()">Selecionar</button>
+            <button class="w_40 bg_vm" onclick="resetarAgente()">Resetar</button>
+            <button class="w_40 bg_vm" onclick="apagarAgente()">Apagar</button>
+        </center>
+        <br>
+        <div class="separador" id="agentes_que_empresa_possue">
+
+        </div>
     </div>
 
     <div id="chat" class="section">
-        <h2>Chat</h2>
+        <p id="chat-agente">Chat</p>
+        <button class="bg_vm" onclick="zerarChatAgenteAtual()">Zerar Chat</button>
         <div class="chat-box" id="chatBox">
-            <!-- Balões de mensagens aparecerão aqui -->
+
         </div>
         <input type="text" id="mensagem" placeholder="Digite sua mensagem">
-        <button onclick="enviarMensagem()">Enviar</button>
+        <button class="w_100 bg_vd" onclick="enviarMensagem()">Enviar</button>
+
     </div>
 
 
@@ -202,27 +274,91 @@
 
     <div id="gerador" class="section">
         <h2>Gerador de Imagens com IA</h2>
-        <img id="imagemIA" class="generated-img" alt="Imagem gerada pela IA" />
         <input type="text" id="promptImagem" placeholder="Descreva a imagem desejada">
-        <button onclick="gerarImagem()">Gerar Imagem</button>
+        <button class="w_100" onclick="gerarImagem()" id="gerarImagem">Gerar Imagem</button>
+
+        <center>
+            <img id="imagemIA" class="generated-img" alt="Imagem gerada pela IA" />
+        </center>
     </div>
 
 
     <div id="IAGeral" class="section">
-        <h2>Chat</h2>
+        <h2>Chat Geral</h2>
         <div class="chat-box" id="chatBoxIAGeral">
             <!-- Balões de mensagens aparecerão aqui -->
         </div>
         <input type="text" id="mensagemIAGeral" placeholder="Digite sua mensagem">
-        <button onclick="enviarMensagemIAGeral()">Enviar</button>
+        <button class="w_100" onclick="enviarMensagemIAGeral()">Enviar</button>
+    </div>
+
+    <div id="painelAdmin" class="section">
+        <h2>Admin</h2>
+
+        <div class="separador">
+            <center>
+                <button onclick="exportarDados()" class="w_40">Exportar Dados</button>
+                <button onclick="importarDados()" class="w_40">Importar Dados</button>
+                <textarea id="dados-dev" rows="3"></textarea>
+            </center>
+        </div>
+
+        <div class="separador">
+            <center>
+                <button class="w_40 bg_vm" onclick="zerarTodosChats()">Zerar Todos Chats de Todas Empresas</button>
+                <button class="w_40 bg_vm" onclick="zerarTodosChatsEmpresaAtual()">Zerar Todos Chats da Empresa
+                    Atual</button>
+                <button class="w_40 bg_vm" onclick="zerarHistoricoIASimples()">Zerar Chat da IA Geral</button>
+                <button class="w_40 bg_vm" onclick="zerarTudo()">Zerar Todo Banco de Dados</button>
+            </center>
+        </div>
+
+
     </div>
 
 
     <script>
 
+
+        function exportarDados() {//funcionando
+            var s = ''
+            const chaves = Object.keys(localStorage);
+            // Exibe as chaves no console ou pode manipular como desejar
+            chaves.forEach(nome => {
+                s += `localStorage.setItem("${nome}", "${localStorage.getItem(nome)}");\n`
+            });
+            document.getElementById('dados-dev').textContent = s
+        }
+        function importarDados() {//funcionando
+            try {
+                eval(document.getElementById('dados-dev').textContent)
+            } catch (error) {
+
+            }
+        }
+
+
+
+
+        //exibe menu de admin, caso usuario seja "Eduardo"
+        if (localStorage.getItem('meu_nome') === "Eduardo") {
+            const bt = document.createElement('button')
+            bt.textContent = 'Admin'
+            document.getElementById('nav').appendChild(bt);
+
+            bt.addEventListener('click', () => {
+                showSection('painelAdmin')
+            });
+        }
+
+
+
+
+
+
+        //localStorages padrão
         if (!localStorage.getItem("empresa")) { localStorage.setItem("empresa", ""); }
         if (!localStorage.getItem("agente")) { localStorage.setItem("agente", ""); }
-        //if (!localStorage.getItem("index_empresa")) { localStorage.setItem("index_empresa", ""); }
 
         if (!localStorage.getItem("lista_de_empresas_nome")) { localStorage.setItem("lista_de_empresas_nome", ""); }
 
@@ -231,6 +367,8 @@
         let empresas = [];
         alimentarListaEmpresas()
         atualizarLista()
+
+
 
         function alimentarListaEmpresas() {//funcionando
             empresas = []; //limpa o array
@@ -246,18 +384,83 @@
 
             document.querySelectorAll(".nav button").forEach(btn => btn.classList.remove("active"));
             event.target.classList.add("active");
+
+            //----------------------------------------
+            if (localStorage.getItem(localStorage.getItem("empresa") + '_' + localStorage.getItem("agente") + '_chat')) {
+                //localStorage.setItem(localStorage.getItem("empresa") + '_' + localStorage.getItem("agente") + '_chat', document.getElementById("chatBox").innerHTML)
+                document.getElementById("chatBox").innerHTML = obterChat();
+            }
+            else {
+                document.getElementById("chatBox").innerHTML = '';
+            }
+
+
         }
 
+        function obterChat() {
+            return localStorage.getItem(localStorage.getItem("empresa") + '_' + localStorage.getItem("agente") + '_chat')
+        }
+
+
+
+        function zerarTodosChats() {//funcionando
+            const chaves = Object.keys(localStorage);
+            // Exibe as chaves no console ou pode manipular como desejar
+            chaves.forEach(nome => {
+                if (nome.includes('chat')) {
+                    localStorage.removeItem(nome)
+                }
+            });
+        }
+
+
+        function zerarChatAgenteAtual() {//funcionando
+
+            if (localStorage.getItem("empresa") == "") {
+                alert("Selecione uma empresa antes de executar alguma ação", 'red')
+                return ""
+            }
+            if (localStorage.getItem("agente") == "") {
+                alert("Selecione um agente antes de executar alguma ação", 'red')
+                return ""
+            }
+
+            const chaves = Object.keys(localStorage);
+            // Exibe as chaves no console ou pode manipular como desejar
+            chaves.forEach(nome => {
+                if (nome.includes('chat') && nome.includes(localStorage.getItem("empresa")) && nome.includes(localStorage.getItem("agente"))) {
+                    localStorage.removeItem(nome)
+                    document.getElementById("chatBox").innerHTML = ''
+                }
+            });
+
+        }
+
+        function zerarTodosChatsEmpresaAtual() {//funcionando
+
+            if (localStorage.getItem("empresa") == "") {
+                alert("Selecione uma empresa antes de executar alguma ação", 'red')
+                return ""
+            }
+
+            const chaves = Object.keys(localStorage);
+            // Exibe as chaves no console ou pode manipular como desejar
+            chaves.forEach(nome => {
+                if (nome.includes('chat') && nome.includes(localStorage.getItem("empresa"))) {
+                    localStorage.removeItem(nome)
+                }
+            });
+        }
+
+
         // EMPRESAS
-
-
         function cadastrarEmpresa() {//funcionando
             const nome = document.getElementById("nomeEmpresa").value;
             const desc = document.getElementById("descricaoEmpresa").value;
             if (nome) {
 
                 if (localStorage.getItem("lista_de_empresas_nome").includes(nome)) {
-                    alert("Empresa ja esta cadastrada!");
+                    alert("Empresa ja esta cadastrada!", 'red');
                     return
                 }
 
@@ -266,7 +469,7 @@
                 alimentarListaEmpresas()
                 atualizarLista()
 
-                //empresas.push({ nome, desc });
+
                 alert("Empresa cadastrada com sucesso!");
                 document.getElementById("nomeEmpresa").value = '';
                 document.getElementById("descricaoEmpresa").value = '';
@@ -290,8 +493,13 @@
 
         function selecionarEmpresa() {//funcionando
             const empresa = document.getElementById("listaEmpresas").value;
-            localStorage.setItem("empresa", empresa);
-            alert(`Empresa selecionada: ${empresa}`);
+            if (empresa !== '') {
+                localStorage.setItem("empresa", empresa);
+                localStorage.setItem("agente", '');
+                alert(`Empresa selecionada: ${empresa}`);
+            } else {
+                alert(`Nenhuma empresa selecionada: ${empresa}`, 'red');
+            }
         }
 
 
@@ -321,14 +529,25 @@
         }
 
 
+        //hook
         setInterval(() => {//funcionaod
+
+            agentes_que_empresa_possue()
+            
+            document.getElementById('chat-agente').innerHTML = 'Agente atual:' + localStorage.getItem("agente")
+
             document.title = localStorage.getItem("empresa") + " - " + localStorage.getItem("agente")
         }, 1);
+
+        //hook mais lento
+        setInterval(() => {//funcionaod
+            gravarHistoricoIASimples()
+        }, 5000);
 
 
         function obterDescricaoEmpresa() {//nao teste, mas deve ta funcionando
             if (localStorage.getItem("empresa") == "") {
-                alert("Selecione uma empresa antes de executar alguma ação")
+                alert("Selecione uma empresa antes de executar alguma ação", 'red')
                 return ""
             }
             if (localStorage.getItem(localStorage.getItem("empresa") + "_descricao")) {
@@ -340,7 +559,7 @@
 
         function obterNomeEmpresa() {//nao teste, mas deve ta funcionando
             if (localStorage.getItem("empresa") == "") {
-                alert("Selecione uma empresa antes de executar alguma ação")
+                alert("Selecione uma empresa antes de executar alguma ação", 'red')
                 return ""
             }
             return localStorage.getItem("empresa")
@@ -354,12 +573,12 @@
             let agente = localStorage.getItem("agente");
             //--------------------------------------
             if (empresa === "") {
-                alert("Selecione uma empresa antes de executar algo")
+                alert("Selecione uma empresa antes de executar algo", 'red')
                 return "";
             }
             //--------------------------------------
             if (agente === "") {
-                alert("Selecione um agente antes de executar algo")
+                alert("Selecione um agente antes de executar algo", 'red')
                 return "";
             }
             //--------------------------------------
@@ -396,9 +615,9 @@
                 funcao = "programar sites, seja na parte front end ou backend, utilizando qualquer liguangem que seja solicitada. Tambem consegue desenvolver aplicativos para desktop, mobile e sites.";
             }
 
-            let descricao_empresa = localStorage.removeItem(empresa + "_descricao")
+            let descricao_empresa = localStorage.getItem(empresa + "_descricao")
 
-            final = intro + funcao + ". A empresa que voce sera responsavel, se chama " + empresa + ", descrição da empresa: " + descricao_empresa;
+            final = intro + funcao + ". A empresa que voce sera responsavel, se chama " + empresa + ", descrição da empresa: " + descricao_empresa + '. ';
 
             return final;
         }
@@ -407,6 +626,41 @@
 
 
         // Agentes
+
+        function agentes_que_empresa_possue() {
+            const h = document.getElementById('agentes_que_empresa_possue')
+            const empresa = localStorage.getItem("empresa");
+            let s = '<hr>Agentes atuais da empresa <b>' + empresa + '</b>:<br><br>'
+
+            if (localStorage.getItem(empresa + "_agente_Planejamento")) {
+                s+='-Planejamento<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Design")) {
+                s+='-Design<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Publicidade")) {
+                s+='-Publicidade<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_SocialMedia")) {
+                s+='-Social Media<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Fotografia")) {
+                s+='-Fotografia<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Relations")) {
+                s+='-Relations<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Atendimento")) {
+                s+='-Atendimento<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Marketing")) {
+                s+='-Marketing<br>'
+            }
+            if (localStorage.getItem(empresa + "_agente_Programador")) {
+                s+='-Programador<br>'
+            }
+            h.innerHTML=s;
+        }
 
         const listaAgentes = [
             "Planejamento",
@@ -428,13 +682,13 @@
             //let agente = localStorage.getItem("agente");
             //--------------------------------------
             if (empresa === "") {
-                alert("Selecione uma empresa antes de criar um agente")
+                alert("Selecione uma empresa antes de criar um agente", 'red')
                 console.log("1")
                 return;
             }
             //--------------------------------------
             if (localStorage.getItem(empresa + "_agente_" + agente_selecionado_no_combo)) {
-                alert("Ja existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa)
+                alert("Ja existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa, 'red')
                 console.log("2")
                 //return;
             }
@@ -453,7 +707,7 @@
             let empresa = localStorage.getItem("empresa");
 
             if (empresa === "") {
-                alert("Selecione uma empresa antes de criar um agente")
+                alert("Selecione uma empresa antes de criar um agente", 'red')
                 console.log("1")
                 return;
             }
@@ -463,7 +717,7 @@
                 alert("Agente de " + agente_selecionado_no_combo + " selecionado para a empresa " + empresa)
             }
             else {
-                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!", 'red')
             }
         }
 
@@ -472,7 +726,7 @@
             let empresa = localStorage.getItem("empresa");
 
             if (empresa === "") {
-                alert("Selecione uma empresa antes de criar um agente")
+                alert("Selecione uma empresa antes de criar um agente", 'red')
                 console.log("1")
                 return;
             }
@@ -484,7 +738,7 @@
                 alert("Agente de " + agente_selecionado_no_combo + " da empresa " + empresa + " resetado com sucesso!")
             }
             else {
-                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!", 'red')
             }
         }
 
@@ -494,7 +748,7 @@
             let empresa = localStorage.getItem("empresa");
 
             if (empresa === "") {
-                alert("Selecione uma empresa antes de criar um agente")
+                alert("Selecione uma empresa antes de criar um agente", 'red')
                 console.log("1")
                 return;
             }
@@ -506,7 +760,7 @@
                 alert("Agente de " + agente_selecionado_no_combo + " da empresa " + empresa + " removido com sucesso!")
             }
             else {
-                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!")
+                alert("Não existe um agente de " + agente_selecionado_no_combo + " para a empresa " + empresa + "!", 'red')
             }
         }
 
@@ -517,10 +771,23 @@
 
         // CHAT
 
+        var respostaIAGeral = "vazio"
+        carregarHistoricoIASimples()
+
         function enviarMensagem() {
             const input = document.getElementById("mensagem");
             const chat = document.getElementById("chatBox");
             const texto = input.value.trim();
+
+            //----------------------------------------------
+            if (localStorage.getItem("empresa") === "") {
+                alert("Selecione uma empresa antes de criar um agente", 'red')
+                return;
+            }
+            if (localStorage.getItem("agente") === "") {
+                alert("Selecione um agente antes de iniciar um chat", 'red')
+                return;
+            }
 
             if (texto) {
                 const horario = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -542,7 +809,38 @@
                     // botBubble.innerHTML = `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`;
                     chat.appendChild(botBubble);
 
-                    efeitoDigitar(botBubble, `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`);
+
+                    console.log(obterChat())
+
+                    if (localStorage.getItem(localStorage.getItem("empresa") + '_' + localStorage.getItem("agente") + '_chat')) {
+                        //chat ja conversou
+                        ia(obterChat() + texto)
+                    } else {
+                        //chat nunca conversou
+                        ia(obterPromptInicial() + texto)
+                    }
+
+
+
+
+                    setTimeout(() => {
+                        //console.log(respostaIAGeral);
+                        //while (respostaIAGeral == "vazio") {
+                        //
+                        //}
+                        //console.log(respostaIAGeral)
+
+                        //efeitoDigitar(botBubble, respostaIAGeral);
+
+                        botBubble.innerHTML = respostaIAGeral;
+                        localStorage.setItem(localStorage.getItem("empresa") + '_' + localStorage.getItem("agente") + '_chat', chat.innerHTML)
+
+
+
+                        respostaIAGeral = "vazio";
+
+                    }, 5000);
+
 
                     chat.scrollTop = chat.scrollHeight;
                 }, 800);
@@ -550,6 +848,28 @@
         }
 
         // CHAT IAGeral
+
+        //localStorage.setItem('iageral',document.getElementById("chatBoxIAGeral").innerHTML)
+        function carregarHistoricoIASimples() {
+            document.getElementById("chatBoxIAGeral").innerHTML = localStorage.getItem('iageral')
+        }
+        function zerarHistoricoIASimples() {
+            localStorage.setItem('iageral', '')
+            carregarHistoricoIASimples()
+            alert('Historico zerado com sucesso!')
+        }
+        function zerarTudo() {
+            localStorage.clear()
+            carregarHistoricoIASimples()
+            alert('Banco de dados zerado por completo com sucesso!')
+            setTimeout(() => {
+                window.location.reload()
+            }, 5000);
+        }
+        function gravarHistoricoIASimples() {
+            localStorage.setItem('iageral', document.getElementById("chatBoxIAGeral").innerHTML)
+        }
+
 
         function enviarMensagemIAGeral() {
             const input = document.getElementById("mensagemIAGeral");
@@ -576,7 +896,21 @@
                     // botBubble.innerHTML = `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`;
                     chat.appendChild(botBubble);
 
-                    efeitoDigitarIAGeral(botBubble, `Olá! Você disse: ${texto}<span class="hora">${horarioBot}</span>`);
+
+
+                    ia(chat.innerHTML)
+                    setTimeout(() => {
+                        //console.log(respostaIAGeral);
+                        while (respostaIAGeral === "vazio") {
+                            setTimeout(() => {
+
+                            }, 1000);
+                        }
+                        efeitoDigitarIAGeral(botBubble, respostaIAGeral);
+                        respostaIAGeral = "vazio";
+
+                    }, 5000);
+
 
                     chat.scrollTop = chat.scrollHeight;
                 }, 800);
@@ -618,19 +952,96 @@
 
 
 
+        function ia(pergunta) {
 
+            //console.log(pergunta)
+
+            fetch('https://text.pollinations.ai/prompt/' + encodeURIComponent(pergunta) + '?seed=' + Math.floor(Math.random() * 9999)) // substitua pelo site desejado
+                .then(response => response.text()) // pega o HTML como texto
+                .then(html => {
+                    for (var i = 0; i < 100; i++) {
+                        html = html.replace("```node", "<textarea>")
+                        html = html.replace("```javascript", "<textarea>")
+                        html = html.replace("```js", "<textarea>")
+                        html = html.replace("```bash", "<textarea>")
+                        html = html.replace("```cpp", "<textarea>")
+                        html = html.replace("```csharp", "<textarea>")
+                        html = html.replace("```html", "<textarea>")
+                        html = html.replace("```ruby", "<textarea>")
+                        html = html.replace("```lua", "<textarea>")
+                        html = html.replace("```markdown", "<textarea>")
+                        html = html.replace("```css", "<textarea>")
+                    }
+                    for (var i = 0; i < 100; i++) {
+                        html = html.replace("\n", "<br>")
+                        html = html.replace("```", "</textarea>")
+                        html = html.replace("**", "")
+                        html = html.replace("###", "")
+                    }
+                    //console.log(respostaIAGeral)
+
+                    respostaIAGeral = html;
+                })
+                .catch(err => {
+                    respostaIAGeral = 'Erro';
+                });
+        }
 
 
         // GERADOR DE IMAGEM (mock visual)
         function gerarImagem() {
+
+            document.getElementById("gerarImagem").textContent = 'Aguarde...'
             const prompt = document.getElementById("promptImagem").value;
             const img = document.getElementById("imagemIA");
-            if (prompt.trim()) {
-                // Apenas simulação
-                img.src = "https://placehold.co/600x300?text=" + encodeURIComponent(prompt);
-                img.style.display = "block";
-            }
+            img.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${Math.floor(Math.random() * 100000)}&width=1000&height=1000&nologo=true`;
+
+
+            setTimeout(() => {
+
+
+                if (prompt.trim()) {
+                    // Apenas simulação
+                    //img.src = "https://placehold.co/600x300?text=" + encodeURIComponent(prompt);
+                    img.style.display = "block";
+
+                    document.getElementById("gerarImagem").textContent = 'Gerar Imagem'
+                }
+            }, 5000);
         }
+
+
+
+        function alert(msg, bg = 'green') {
+            const d = document.createElement('div')
+            d.style.width = '30vw'
+            d.style.padding = '15px'
+            d.style.borderRadius = '10px'
+            d.style.backgroundColor = bg
+            d.style.position = 'fixed'
+            d.style.top = '10px'
+            d.style.right = '10px'
+            d.innerHTML = msg
+            document.body.appendChild(d)
+
+            var biruleibe = 10
+
+            setTimeout(() => {
+                var lop = setInterval(() => {
+                    d.style.top = biruleibe + 'px'
+                    biruleibe++
+
+                    if (biruleibe == 1000) {
+                        d.remove()
+                        clearInterval(lop)
+                    }
+                }, 1);
+            }, 3000);
+
+        }
+
+
+
     </script>
 </body>
 

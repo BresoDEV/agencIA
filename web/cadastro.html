@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
+  <title>Cadastro</title>
   <style>
     * {
       box-sizing: border-box;
@@ -93,63 +93,37 @@
 
 <body>
   <div class="container">
-    <h2>Login</h2>
+    <h2>Cadastro</h2>
 
     <div class="form-group">
-      <label for="login">Usuário</label>
+      <label for="login">Digite seu nome:</label>
       <input type="text" id="login" name="login" required />
     </div>
     <div class="form-group">
-      <label for="senha">Senha</label>
-      <input type="password" id="senha" name="senha" required />
+      <center>
+        <h2 id="senha"></h2>
+      </center>
     </div>
 
 
-    <input type="checkbox" id="checkbox" name="checkbox" required />
-    <label for="checkbox">Armazenar Usuario e Senha</label>
 
     <br>
-    <br>
-    <button id="submit" class="login-btn">Entrar</button>
+    <button id="submit" class="login-btn">Gerar Senha</button>
 
     <div class="signup-text">
-      Não tem uma conta? <a href="cadastro.html">Crie seu cadastro</a>
+      Já tem uma conta? <a href="login.html">Entre agora!</a>
     </div>
   </div>
 </body>
 <script>
 
 
-  const login = document.getElementById('login');
-  const senha = document.getElementById('senha');
-  const submit = document.getElementById('submit');
-  const checkbox = document.getElementById('checkbox');
-
-
-
-  //salva usuario e senha e poe nos imputs
-  if (localStorage.getItem('meu_nome')) {
-    login.value = localStorage.getItem('meu_nome');
-    if (localStorage.getItem('minha_senha')) {
-      senha.value = localStorage.getItem('minha_senha');
-
-      checkbox.checked = true;
-    }
-  }
 
 
   console.log(joaat('Eduardo'))
 
-  submit.addEventListener('click', () => {
-    if (joaat(login.value) === senha.value) {
-      localStorage.setItem('autenticado', '1');
-      if (checkbox.checked) {
-        localStorage.setItem('meu_nome', login.value);
-        localStorage.setItem('minha_senha', senha.value);
-      }
-      //window.location.href = "index.html"
-    }
-    window.location.href = "index.html"
+  document.getElementById('submit').addEventListener('click', () => {
+    document.getElementById('senha').innerHTML=joaat(document.getElementById('login').value)
   });
 
   function joaat(text) {
